@@ -5,7 +5,7 @@ import zlib
 import sys
 import os
 
-from terrainlib import stats, plot
+from view import stats, plot
 
 scale = 1
 if len(sys.argv) > 1:
