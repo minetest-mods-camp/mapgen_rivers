@@ -27,6 +27,7 @@ local function get_bounds(dirs, rivers)
 end
 
 local function twist(dirs, rivers, n)
+	n = n or 5
 	local X, Y = dirs.X, dirs.Y
 	local bounds_x, bounds_y = get_bounds(dirs, rivers)
 	local dn = 0.5 / n

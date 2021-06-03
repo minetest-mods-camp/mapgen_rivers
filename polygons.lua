@@ -7,51 +7,39 @@ end
 local world_data_path = minetest.world_data_path
 minetest.mkdir(world_data_path)
 
-local load_map = dofile(modpath .. 'load.lua')
+dofile(modpath .. 'load.lua')
 
-local function copy_if_needed(filename)
-	local wfilename = world_data_path..filename
-	local wfile = io.open(wfilename, 'rb')
-	if wfile then
-		wfile:close()
-		return
-	end
-	local mfilename = mod_data_path..filename
-	local mfile = io.open(mfilename, 'rb')
-	local wfile = io.open(wfilename, 'wb')
-	wfile:write(mfile:read("*all"))
-	mfile:close()
-	wfile:close()
+-- Try to read file 'size'
+local sfile = io.open(world_data_path..'size', 'r')
+if not sfile then
+	-- Generate a map!!
+	local generate = dofile(mapgen_rivers.modpath .. '/generate.lua')
+	generate()
+	sfile = io.open(world_data_path..'size', 'r')
 end
 
-copy_if_needed('size')
-local sfile = io.open(world_data_path..'size', 'r')
+-- Read the map
+-- TODO: if data has just been generated, transfer it without reloading everything
 local X = tonumber(sfile:read('*l'))
 local Z = tonumber(sfile:read('*l'))
 sfile:close()
 
-copy_if_needed('dem')
-local dem = load_map('dem', 2, true, X*Z)
-copy_if_needed('lakes')
-local lakes = load_map('lakes', 2, true, X*Z)
-copy_if_needed('dirs')
-local dirs = load_map('dirs', 1, false, X*Z)
-copy_if_needed('rivers')
-local rivers = load_map('rivers', 4, false, X*Z)
+local dem = mapgen_rivers.load_map('dem', 2, true, X*Z)
+local lakes = mapgen_rivers.load_map('lakes', 2, true, X*Z)
+local dirs = mapen_rivers.load_map('dirs', 1, false, X*Z)
+local rivers = mapgen_rivers.load_map('rivers', 4, false, X*Z)
 
-copy_if_needed('offset_x')
 local offset_x = load_map('offset_x', 1, true, X*Z)
 for k, v in ipairs(offset_x) do
 	offset_x[k] = (v+0.5)/256
 end
 
-copy_if_needed('offset_y')
 local offset_z = load_map('offset_y', 1, true, X*Z)
 for k, v in ipairs(offset_z) do
 	offset_z[k] = (v+0.5)/256
 end
+-- Should have finished loading
 
--- To index a flat array representing a 2D map
 local function index(x, z)
 	return z*X+x+1
 end
