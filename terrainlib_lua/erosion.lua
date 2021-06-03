@@ -108,14 +108,17 @@ local function diffuse(model, time)
     -- TODO Test this
 end
 
-local rivermapper, gaussian
+local modpath = ""
 if minetest then
-	rivermapper = dofile(minetest.get_modpath(minetest.get_current_modname()) .. '/terrainlib_lua/rivermapper.lua')
-	gaussian = dofile(minetest.get_modpath(minetest.get_current_modname()) .. '/terrainlib_lua/gaussian.lua')
-else
-	rivermapper = dofile('rivermapper.lua')
-	gaussian = dofile('gaussian.lua')
+    if minetest.global_exists(mapgen_rivers) then
+        modpath = mapgen_rivers.modpath .. "terrainlib_lua/"
+    else
+        modpath = minetest.get_modpath(minetest.get_current_modname()) .. "terrainlib_lua/"
+    end
 end
+
+local rivermapper = dofile(modpath .. "rivermapper.lua")
+local gaussian = dofile(modpath .. "gaussian.lua")
 
 local function flow(model)
 	model.dirs, model.lakes = rivermapper.flow_routing(model.dem, model.dirs, model.lakes, 'semirandom')

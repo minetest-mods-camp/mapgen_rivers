@@ -1,6 +1,8 @@
 mapgen_rivers = {}
 
 local modpath = minetest.get_modpath(minetest.get_current_modname()) .. '/'
+mapgen_rivers.modpath = modpath
+mapgen_rivers.world_data_path = minetest.get_worldpath() .. '/river_data'
 
 dofile(modpath .. 'settings.lua')
 

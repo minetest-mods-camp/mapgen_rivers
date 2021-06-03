@@ -1,4 +1,4 @@
-local modpath = minetest.get_modpath(minetest.get_current_modname()) .. '/'
+local modpath = mapgen_rivers.modpath
 
 local make_polygons = dofile(modpath .. 'polygons.lua')
 local transform_quadri = dofile(modpath .. 'geometry.lua')

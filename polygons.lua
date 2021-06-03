@@ -1,10 +1,10 @@
-local modpath = minetest.get_modpath(minetest.get_current_modname()) .. '/'
+local modpath = mapgen_rivers.modpath
 local mod_data_path = modpath .. 'river_data/'
 if not io.open(mod_data_path .. 'size', 'r') then
 	mod_data_path = modpath .. 'demo_data/'
 end
 
-local world_data_path = minetest.get_worldpath() .. '/river_data/'
+local world_data_path = minetest.world_data_path
 minetest.mkdir(world_data_path)
 
 local load_map = dofile(modpath .. 'load.lua')
