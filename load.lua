@@ -1,4 +1,4 @@
-local worldpath = minetest.world_data_path
+local worldpath = mapgen_rivers.world_data_path
 
 function mapgen_rivers.load_map(filename, bytes, signed, size)
 	local file = io.open(worldpath .. filename, 'rb')

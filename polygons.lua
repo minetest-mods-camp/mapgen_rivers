@@ -4,7 +4,7 @@ if not io.open(mod_data_path .. 'size', 'r') then
 	mod_data_path = modpath .. 'demo_data/'
 end
 
-local world_data_path = minetest.world_data_path
+local world_data_path = mapgen_rivers.world_data_path
 minetest.mkdir(world_data_path)
 
 dofile(modpath .. 'load.lua')
@@ -26,15 +26,15 @@ sfile:close()
 
 local dem = mapgen_rivers.load_map('dem', 2, true, X*Z)
 local lakes = mapgen_rivers.load_map('lakes', 2, true, X*Z)
-local dirs = mapen_rivers.load_map('dirs', 1, false, X*Z)
+local dirs = mapgen_rivers.load_map('dirs', 1, false, X*Z)
 local rivers = mapgen_rivers.load_map('rivers', 4, false, X*Z)
 
-local offset_x = load_map('offset_x', 1, true, X*Z)
+local offset_x = mapgen_rivers.load_map('offset_x', 1, true, X*Z)
 for k, v in ipairs(offset_x) do
 	offset_x[k] = (v+0.5)/256
 end
 
-local offset_z = load_map('offset_y', 1, true, X*Z)
+local offset_z = mapgen_rivers.load_map('offset_y', 1, true, X*Z)
 for k, v in ipairs(offset_z) do
 	offset_z[k] = (v+0.5)/256
 end

@@ -29,7 +29,7 @@ local flow_methods = {
 
 local function flow_routing(dem, dirs, lakes, method)
 	method = method or 'semirandom'
-	flow_local = flow_methods[method] or flow_local_semirandom
+	local flow_local = flow_methods[method] or flow_local_semirandom
 
 	dirs = dirs or {}
 	lakes = lakes or {}
@@ -194,7 +194,7 @@ local function flow_routing(dem, dirs, lakes, method)
 		end
 	end
 
-	basin_graph = {}
+	local basin_graph = {}
 	for n=1, nbasins do
 		--print(n, nbasins)
 		local b1, lnk1 = next(lowlevel)

@@ -110,7 +110,7 @@ end
 
 local modpath = ""
 if minetest then
-    if minetest.global_exists(mapgen_rivers) then
+    if minetest.global_exists('mapgen_rivers') then
         modpath = mapgen_rivers.modpath .. "terrainlib_lua/"
     else
         modpath = minetest.get_modpath(minetest.get_current_modname()) .. "terrainlib_lua/"
