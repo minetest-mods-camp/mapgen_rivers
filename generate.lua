@@ -51,12 +51,9 @@ local function generate()
 	local mfloor = math.floor
 	local mmin, mmax = math.min, math.max
 	local offset_x, offset_y = twist(model.dirs, model.rivers, 5)
-	local dirs = model.dirs
-	local converter = {2, 1, 4, 3, [0]=0}
 	for i=1, size.x*size.y do
 		offset_x[i] = mmin(mmax(offset_x[i]*256, -128), 127)
 		offset_y[i] = mmin(mmax(offset_y[i]*256, -128), 127)
-		dirs[i] = converter[dirs[i]] -- TODO Fix this
 	end
 
 	mapgen_rivers.write_map('dem', model.dem, 2)

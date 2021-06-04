@@ -46,13 +46,13 @@ local function erode(model, time)
 				new_elev = lakes[iw]
 				break
 			elseif d == 1 then
-				inext = iw+1
-			elseif d == 2 then
 				inext = iw+X
+			elseif d == 2 then
+				inext = iw+1
 			elseif d == 3 then
-				inext = iw-1
-			elseif d == 4 then
 				inext = iw-X
+			elseif d == 4 then
+				inext = iw-1
 			end
 
 			local etime = erosion_time[iw]

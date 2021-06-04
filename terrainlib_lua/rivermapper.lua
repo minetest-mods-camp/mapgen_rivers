@@ -56,10 +56,10 @@ local function flow_routing(dem, dirs, lakes, method)
 		for x=1, X do
 			local zi = dem[i]
 			local plist = {
-				x<X and mmax(zi-dem[i+1], 0) or 0, -- Eastward
 				y<Y and mmax(zi-dem[i+X], 0) or 0, -- Southward
-				x>1 and mmax(zi-dem[i-1], 0) or 0, -- Westward
+				x<X and mmax(zi-dem[i+1], 0) or 0, -- Eastward
 				y>1 and mmax(zi-dem[i-X], 0) or 0, -- Northward
+				x>1 and mmax(zi-dem[i-1], 0) or 0, -- Westward
 			}
 
 			local d = flow_local(plist)
@@ -67,13 +67,13 @@ local function flow_routing(dem, dirs, lakes, method)
 			if d == 0 then
 				singular[#singular+1] = i
 			elseif d == 1 then
-				dirs2[i+1] = dirs2[i+1] + 1
+				dirs2[i+X] = dirs2[i+X] + 1
 			elseif d == 2 then
-				dirs2[i+X] = dirs2[i+X] + 2
+				dirs2[i+1] = dirs2[i+1] + 2
 			elseif d == 3 then
-				dirs2[i-1] = dirs2[i-1] + 4
+				dirs2[i-X] = dirs2[i-X] + 4
 			elseif d == 4 then
-				dirs2[i-X] = dirs2[i-X] + 8
+				dirs2[i-1] = dirs2[i-1] + 8
 			end
 			i = i + 1
 		end
@@ -128,43 +128,43 @@ local function flow_routing(dem, dirs, lakes, method)
 			basin_id[i] = ib
 			local d = dirs2[i]
 
-			if d >= 8 then -- River coming from South
+			if d >= 8 then -- River coming from East
 				d = d - 8
-				queue[#queue+1] = i+X
-				--tinsert(queue, i+X)
-			elseif i <= X*(Y-1) then
-				add_link(i, i+X, ib, true)
-			else
-				add_link(i, 0, ib, true)
-			end
-
-			if d >= 4 then -- River coming from East
-				d = d - 4
 				queue[#queue+1] = i+1
-				--tinsert(queue, i+1)
+				--tinsert(queue, i+X)
 			elseif i%X > 0 then
 				add_link(i, i+1, ib, false)
 			else
 				add_link(i, 0, ib, false)
 			end
 
-			if d >= 2 then -- River coming from North
-				d = d - 2
-				queue[#queue+1] = i-X
-				--tinsert(queue, i-X)
-			elseif i > X then
-				add_link(i, i-X, ib, true)
+			if d >= 4 then -- River coming from South
+				d = d - 4
+				queue[#queue+1] = i+X
+				--tinsert(queue, i+1)
+			elseif i <= X*(Y-1) then
+				add_link(i, i+X, ib, true)
 			else
 				add_link(i, 0, ib, true)
 			end
 
-			if d >= 1 then -- River coming from West
+			if d >= 2 then -- River coming from West
+				d = d - 2
 				queue[#queue+1] = i-1
-				--tinsert(queue, i-1)
+				--tinsert(queue, i-X)
 			elseif i%X ~= 1 then
 				add_link(i, i-1, ib, false)
 			else
 				add_link(i, 0, ib, false)
+			end
+
+			if d >= 1 then -- River coming from North
+				queue[#queue+1] = i-X
+				--tinsert(queue, i-1)
+			elseif i > X then
+				add_link(i, i-X, ib, true)
+			else
+				add_link(i, 0, ib, true)
 			end
 		end
 	end
@@ -291,7 +291,7 @@ local function flow_routing(dem, dirs, lakes, method)
 			--print('Flow '..b2..' into '..b1)
 			-- Make b2 flow into b1
 			local i = bound.i
-			local dir = bound.is_y and 4 or 3
+			local dir = bound.is_y and 3 or 4
 			--print(basin_id[i])
 			if basin_id[i] ~= b2 then
 				dir = dir - 2
@@ -308,13 +308,13 @@ local function flow_routing(dem, dirs, lakes, method)
 			repeat
 				dir, dirs[i] = dirs[i], dir
 				if dir == 1 then
-					i = i + 1
-				elseif dir == 2 then
 					i = i + X
+				elseif dir == 2 then
+					i = i + 1
 				elseif dir == 3 then
-					i = i - 1
-				elseif dir == 4 then
 					i = i - X
+				elseif dir == 4 then
+					i = i - 1
 				end
 				dir = reverse[dir]
 			until dir == 0
@@ -349,13 +349,13 @@ local function accumulate(dirs, waterq)
 		local i2
 		local dir = dirs[i1]
 		if dir == 1 then
-			i2 = i1+1
-		elseif dir == 2 then
 			i2 = i1+X
+		elseif dir == 2 then
+			i2 = i1+1
 		elseif dir == 3 then
-			i2 = i1-1
-		elseif dir == 4 then
 			i2 = i1-X
+		elseif dir == 4 then
+			i2 = i1-1
 		end
 		if i2 then
 			ndonors[i2] = ndonors[i2] + 1
@@ -371,13 +371,13 @@ local function accumulate(dirs, waterq)
 			--print(dir)
 			while dir > 0 do
 				if dir == 1 then
-					i2 = i2 + 1
-				elseif dir == 2 then
 					i2 = i2 + X
+				elseif dir == 2 then
+					i2 = i2 + 1
 				elseif dir == 3 then
-					i2 = i2 - 1
-				elseif dir == 4 then
 					i2 = i2 - X
+				elseif dir == 4 then
+					i2 = i2 - 1
 				end
 				--print('Incrementing '..i2)
 				w = w + waterq[i2]

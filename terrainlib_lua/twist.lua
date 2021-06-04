@@ -12,14 +12,14 @@ local function get_bounds(dirs, rivers)
 	for i=1, X*Y do
 		local dir = dirs[i]
 		local river = rivers[i]
-		if dir == 1 then -- East (+X)
-			bounds_x[i] = river
-		elseif dir == 2 then -- South (+Y)
+		if dir == 1 then -- South (+Y)
 			bounds_y[i] = river
-		elseif dir == 3 then -- West (-X)
-			bounds_x[i-1] = river
-		elseif dir == 4 then
+		elseif dir == 2 then -- East (+X)
+			bounds_x[i] = river
+		elseif dir == 3 then -- North (-Y)
 			bounds_y[i-X] = river
+		elseif dir == 4 then -- West (-X)
+			bounds_x[i-1] = river
 		end
 	end
 
