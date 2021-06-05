@@ -1,7 +1,6 @@
 local EvolutionModel = dofile(mapgen_rivers.modpath .. '/terrainlib_lua/erosion.lua')
 local twist = dofile(mapgen_rivers.modpath .. '/terrainlib_lua/twist.lua')
 
-local size = {x=1000, y=1000}
 local blocksize = 12
 local variation_speed = 70
 
@@ -21,6 +20,9 @@ local niter = math.ceil(time/time_step)
 time_step = time / niter
 
 local function generate()
+	local grid = mapgen_rivers.grid
+	local size = grid.size
+
 	local seed = tonumber(minetest.get_mapgen_setting("seed"))
 	np_base.seed = (np_base.seed or 0) + seed
 
@@ -65,6 +67,13 @@ local function generate()
 	local sfile = io.open(mapgen_rivers.world_data_path .. 'size', "w")
 	sfile:write(size.x..'\n'..size.y)
 	sfile:close()
+
+    grid.dem = model.dem
+    grid.lakes = model.lakes
+    grid.dirs = model.dirs
+    grid.rivers = model.rivers
+    grid.offset_x = offset_x
+    grid.offset_y = offset_y
 end
 
 return generate

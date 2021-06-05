@@ -42,6 +42,7 @@ function mapgen_rivers.write_map(filename, data, bytes)
 
     for i=1, size do
         local n = mfloor(data[i])
+        data[i] = n
         for j=bytes, 2, -1 do
             bytelist[j] = n % 256
             n = mfloor(n / 256)

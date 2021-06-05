@@ -9,36 +9,41 @@ minetest.mkdir(world_data_path)
 
 dofile(modpath .. 'load.lua')
 
+mapgen_rivers.grid = {}
+
+local X = 1000
+local Z = 1000
+
 -- Try to read file 'size'
 local sfile = io.open(world_data_path..'size', 'r')
-if not sfile then
+if sfile then
+	X, Z = tonumber(sfile:read('*l')), tonumber(sfile:read('*l'))
+	sfile:close()
+	minetest.register_on_mods_loaded(function()
+		local grid = mapgen_rivers.grid
+		grid.dem = mapgen_rivers.load_map('dem', 2, true, X*Z)
+		grid.lakes = mapgen_rivers.load_map('lakes', 2, true, X*Z)
+		grid.dirs = mapgen_rivers.load_map('dirs', 1, false, X*Z)
+		grid.rivers = mapgen_rivers.load_map('rivers', 4, false, X*Z)
+
+		grid.offset_x = mapgen_rivers.load_map('offset_x', 1, true, X*Z)
+		grid.offset_y = mapgen_rivers.load_map('offset_y', 1, true, X*Z)
+	end)
+else
 	-- Generate a map!!
 	local generate = dofile(mapgen_rivers.modpath .. '/generate.lua')
-	generate()
-	sfile = io.open(world_data_path..'size', 'r')
+	minetest.register_on_mods_loaded(generate)
 end
 
--- Read the map
--- TODO: if data has just been generated, transfer it without reloading everything
-local X = tonumber(sfile:read('*l'))
-local Z = tonumber(sfile:read('*l'))
-sfile:close()
+minetest.register_on_mods_loaded(function()
+	local offset_x, offset_y = mapgen_rivers.grid.offset_x, mapgen_rivers.grid.offset_y
+	for i=1, #offset_x do
+		offset_x[i] = (offset_x[i]+0.5) * (1/256)
+		offset_y[i] = (offset_y[i]+0.5) * (1/256)
+	end
+end)
 
-local dem = mapgen_rivers.load_map('dem', 2, true, X*Z)
-local lakes = mapgen_rivers.load_map('lakes', 2, true, X*Z)
-local dirs = mapgen_rivers.load_map('dirs', 1, false, X*Z)
-local rivers = mapgen_rivers.load_map('rivers', 4, false, X*Z)
-
-local offset_x = mapgen_rivers.load_map('offset_x', 1, true, X*Z)
-for k, v in ipairs(offset_x) do
-	offset_x[k] = (v+0.5)/256
-end
-
-local offset_z = mapgen_rivers.load_map('offset_y', 1, true, X*Z)
-for k, v in ipairs(offset_z) do
-	offset_z[k] = (v+0.5)/256
-end
--- Should have finished loading
+mapgen_rivers.grid.size = {x=X, y=Z}
 
 local function index(x, z)
 	return z*X+x+1
@@ -85,6 +90,15 @@ local init = false
 local function make_polygons(minp, maxp)
 	print("Generating polygon map")
 	print(minp.x, maxp.x, minp.z, maxp.z)
+
+	local grid = mapgen_rivers.grid
+	local dem = grid.dem
+	local lakes = grid.lakes
+	local dirs = grid.dirs
+	local rivers = grid.rivers
+
+	local offset_x = grid.offset_x
+	local offset_z = grid.offset_y
 
 	if not init then
 		if glaciers then
