@@ -6,12 +6,10 @@ mapgen_rivers.world_data_path = minetest.get_worldpath() .. '/river_data/'
 
 dofile(modpath .. 'settings.lua')
 
-local blocksize = mapgen_rivers.blocksize
-local sea_level = mapgen_rivers.sea_level
-local riverbed_slope = mapgen_rivers.riverbed_slope
-local elevation_chill = mapgen_rivers.elevation_chill
-local use_distort = mapgen_rivers.distort
-local use_biomes = mapgen_rivers.biomes
+local sea_level = mapgen_rivers.settings.sea_level
+local elevation_chill = mapgen_rivers.settings.elevation_chill
+local use_distort = mapgen_rivers.settings.distort
+local use_biomes = mapgen_rivers.settings.biomes
 local use_biomegen_mod = use_biomes and minetest.global_exists('biomegen')
 use_biomes = use_biomes and not use_biomegen_mod
 

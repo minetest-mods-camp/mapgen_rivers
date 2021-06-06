@@ -1,21 +1,15 @@
 local EvolutionModel = dofile(mapgen_rivers.modpath .. '/terrainlib_lua/erosion.lua')
 local twist = dofile(mapgen_rivers.modpath .. '/terrainlib_lua/twist.lua')
 
-local blocksize = 12
-local variation_speed = 70
+local blocksize = mapgen_rivers.settings.blocksize
+local tectonic_speed = mapgen_rivers.settings.tectonic_speed
 
-local np_base = {
-	offset = 0,
-	scale = 200,
-	seed = 2469,
-	octaves = 8,
-	spread = {x=4000/blocksize, y=4000/blocksize, z=4000/blocksize},
-	persist = 0.6,
-	lacunarity = 2,
-}
+local np_base = table.copy(mapgen_rivers.noise_params.base)
 
-local time = 10
-local time_step = 1
+local evol_params = mapgen_rivers.settings.evol_params
+
+local time = mapgen_rivers.settings.evol_time
+local time_step = mapgen_rivers.settings.evol_time_step
 local niter = math.ceil(time/time_step)
 time_step = time / niter
 
@@ -34,19 +28,23 @@ local function generate()
 	dem.X = size.x
 	dem.Y = size.y
 
-	local model = EvolutionModel()
+	local model = EvolutionModel(evol_params)
 	model.dem = dem
 	local ref_dem = model:define_isostasy(dem)
 
-	local variation_step = variation_speed * time_step
+	local tectonic_step = tectonic_speed * time_step
 	for i=1, niter do
 		--nobj_base:get_map_slice({z=i+1}, {z=1}, ref_dem)
-		nobj_base:get_3d_map_flat({x=0, y=variation_step*i, z=0}, ref_dem)
 
 		model:diffuse(time_step)
 		model:flow()
 		model:erode(time_step)
-		model:isostasy()
+		if i < niter then
+		    if tectonic_step ~= 0 then
+			    nobj_base:get_3d_map_flat({x=0, y=tectonic_step*i, z=0}, ref_dem)
+		    end
+			model:isostasy()
+		end
 	end
 	model:flow()
 

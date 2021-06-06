@@ -3,9 +3,8 @@ local modpath = mapgen_rivers.modpath
 local make_polygons = dofile(modpath .. 'polygons.lua')
 local transform_quadri = dofile(modpath .. 'geometry.lua')
 
-local blocksize = mapgen_rivers.blocksize
-local sea_level = mapgen_rivers.sea_level
-local riverbed_slope = mapgen_rivers.riverbed_slope
+local sea_level = mapgen_rivers.settings.sea_level
+local riverbed_slope = mapgen_rivers.settings.riverbed_slope * mapgen_rivers.settings.blocksize
 
 local MAP_BOTTOM = -31000
 

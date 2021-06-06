@@ -49,12 +49,12 @@ local function index(x, z)
 	return z*X+x+1
 end
 
-local blocksize = mapgen_rivers.blocksize
-local min_catchment = mapgen_rivers.min_catchment
-local max_catchment = mapgen_rivers.max_catchment
+local blocksize = mapgen_rivers.settings.blocksize
+local min_catchment = mapgen_rivers.settings.min_catchment
+local max_catchment = mapgen_rivers.settings.max_catchment
 
 local map_offset = {x=0, z=0}
-if mapgen_rivers.center then
+if mapgen_rivers.settings.center then
 	map_offset.x = blocksize*X/2
 	map_offset.z = blocksize*Z/2
 end
@@ -74,14 +74,14 @@ local function river_width(flow)
 end
 
 local noise_heat -- Need a large-scale noise here so no heat blend
-local elevation_chill = mapgen_rivers.elevation_chill
+local elevation_chill = mapgen_rivers.settings.elevation_chill
 local function get_temperature(x, y, z)
 	local pos = {x=x, y=z}
 	return noise_heat:get2d(pos) - y*elevation_chill
 end
 
-local glaciers = mapgen_rivers.glaciers
-local glacier_factor = mapgen_rivers.glacier_factor
+local glaciers = mapgen_rivers.settings.glaciers
+local glacier_factor = mapgen_rivers.settings.glacier_factor
 
 local init = false
 
