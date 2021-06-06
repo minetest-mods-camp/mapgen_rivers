@@ -6,11 +6,8 @@ mapgen_rivers_center (Center map) bool false
 #    Represents horizontal map scale. Every cell of the grid will be upscaled to
 #    a square of this size.
 #    For example if the grid size is 1000x1000 and block size is 12,
-#    the actual size of the map will be 15000.
+#    the actual size of the map will be 12000.
 mapgen_rivers_blocksize (Block size) float 12.0 2.0 40.0
-
-#    Sea level used by mapgen_rivers
-mapgen_rivers_sea_level (Sea level) int 1
 
 #    Minimal catchment area for a river to be drawn, in grid cells
 #    (1 cell = blocksize x blocksize).
@@ -49,4 +46,55 @@ mapgen_rivers_glacier_widening_factor (Glacier widening factor) float 8.0 1.0 20
 #    This results in mountains being more covered by snow.
 mapgen_rivers_elevation_chill (Elevation chill) float 0.25 0.0 5.0
 
-# Noises: to be added. For now they are hardcoded.
+[Landscape evolution parameters]
+
+#    Modelled landscape evolution time, in arbitrary units
+mapgen_rivers_evol_time (Landscape evolution time) float 10.0 0.0 100.0
+
+#    Model time steps in arbitrary units
+#    Smaller values will result in more time steps to be necessary to
+#    complete the simulation, taking more time.
+mapgen_rivers_evol_time_step (Landscape evolution time step) float 1.0 0.0 50.0
+
+#    To adjust river erosion proportionnally.
+#    This type of erosion acts by deepening the valleys.
+mapgen_rivers_river_erosion_coef (River erosion coefficient) float 0.5 0.0 10.0
+
+#    Represents how much river erosion depends on river flow (catchment area).
+#    Catchment area is elevated to this power.
+#    Extreme cases: 0.0 -> All rivers have the same erosive capabilities
+#    1.0 -> Erosion is proportional to river flow
+#    Reasonable values are generally between 0.4 and 0.7.
+#
+#    This parameter is extremely sensitive, and changes may require to adjust
+#    'river_erosion_coef' as well.
+mapgen_rivers_river_erosion_power (River erosion power) float 0.4 0.0 1.0
+
+#    Intensity of diffusive erosion.
+#    Smoothes peaks and valleys, and tends to prevent sharp cliffs from forming.
+mapgen_rivers_diffusive_erosion (Diffusive erosion) float 0.5 0.0 10.0
+
+#    Speed of evolution of tectonic conditions between steps
+#    Higher values means tectonics will be very different from one step to the other,
+#    resulting in geologically unstable and more varied landforms (plateau, gorge, lake...)
+mapgen_rivers_tectonic_speed (Tectonic speed) float 70 0 10000
+
+[Noises]
+
+#    Y level of terrain at a very large scale. Only used during pre-generation.
+#    X and Z axes correspond to map's X and Z directions, and Y axis is time.
+#    Successive XZ slices of this noise represent successive tectonic states.
+mapgen_rivers_np_base (Terrain base noise) noise_params_3d 0, 200, (4000, 4000, 4000), 2469, 8, 0.6, 2.0
+
+#    This noise will shear the terrain on the X axis,
+#    to break the regularity of the river grid.
+mapgen_rivers_np_distort_x (X-axis distorsion noise) noise_params_3d 0, 1, (64, 32, 64), -4574, 3, 0.75, 2.0
+
+#    This noise will shear the terrain on the Z axis,
+#    to break the regularity of the river grid.
+mapgen_rivers_np_distort_z (Z-axis distorsion noise) noise_params_3d 0, 1, (64, 32, 64), -7940, 3, 0.75, 2.0
+
+#    Amplitude of the distorsion.
+#    Too small values may leave the grid pattern apparent,
+#    and too high values could make the terrain insanely twisted.
+mapgen_rivers_np_distort_amplitude (Distorsion amplitude noise) noise_params_2d 0, 10, (1024, 1024, 1024), 676, 5, 0.5, 2.0, absvalue
