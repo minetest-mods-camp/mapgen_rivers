@@ -13,7 +13,7 @@ local time_step = mapgen_rivers.settings.evol_time_step
 local niter = math.ceil(time/time_step)
 time_step = time / niter
 
-local function generate()
+local function pregenerate()
 	local grid = mapgen_rivers.grid
 	local size = grid.size
 
@@ -74,4 +74,4 @@ local function generate()
     grid.offset_y = offset_y
 end
 
-return generate
+return pregenerate

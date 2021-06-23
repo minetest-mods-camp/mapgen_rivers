@@ -31,8 +31,8 @@ if sfile then
 	end)
 else
 	-- Generate a map!!
-	local generate = dofile(mapgen_rivers.modpath .. '/generate.lua')
-	minetest.register_on_mods_loaded(generate)
+	local pregenerate = dofile(mapgen_rivers.modpath .. '/pregenerate.lua')
+	minetest.register_on_mods_loaded(pregenerate)
 end
 
 minetest.register_on_mods_loaded(function()
