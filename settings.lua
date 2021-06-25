@@ -41,7 +41,7 @@ end
 local def_setting = mapgen_rivers.define_setting
 
 mapgen_rivers.settings = {
-	center = def_setting('center', 'bool', false),
+	center = def_setting('center', 'bool', true),
 	blocksize = def_setting('blocksize', 'number', 12),
 	sea_level = tonumber(minetest.get_mapgen_setting('water_level')),
 	min_catchment = def_setting('min_catchment', 'number', 25),

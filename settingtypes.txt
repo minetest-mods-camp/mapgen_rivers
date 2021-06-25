@@ -1,7 +1,7 @@
 # File containing all settings for 'mapgen_rivers' mod.
 
 #    Whether the map should be centered at x=0, z=0.
-mapgen_rivers_center (Center map) bool false
+mapgen_rivers_center (Center map) bool true
 
 #    Represents horizontal map scale. Every cell of the grid will be upscaled to
 #    a square of this size.
@@ -84,7 +84,7 @@ mapgen_rivers_tectonic_speed (Tectonic speed) float 70 0 10000
 #    Y level of terrain at a very large scale. Only used during pre-generation.
 #    X and Z axes correspond to map's X and Z directions, and Y axis is time.
 #    Successive XZ slices of this noise represent successive tectonic states.
-mapgen_rivers_np_base (Terrain base noise) noise_params_3d 0, 200, (4000, 4000, 4000), 2469, 8, 0.6, 2.0
+mapgen_rivers_np_base (Terrain base noise) noise_params_3d 0, 300, (2048, 2048, 2048), 2469, 8, 0.6, 2.0
 
 #    This noise will shear the terrain on the X axis,
 #    to break the regularity of the river grid.
