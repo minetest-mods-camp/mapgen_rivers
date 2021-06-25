@@ -44,7 +44,6 @@ local function flow_routing(dem, dirs, lakes, method)
 	dirs.Y = Y
 	lakes.X = X
 	lakes.Y = Y
-	--print(X, Y)
 	local i = 1
 	local dirs2 = {}
 	for i=1, X*Y do
@@ -81,7 +80,6 @@ local function flow_routing(dem, dirs, lakes, method)
 
 	-- Compute basins and links
 	local nbasins = #singular
-	print(nbasins)
 	local basin_id = {}
 	local links = {}
 	local basin_links
@@ -196,7 +194,6 @@ local function flow_routing(dem, dirs, lakes, method)
 
 	local basin_graph = {}
 	for n=1, nbasins do
-		--print(n, nbasins)
 		local b1, lnk1 = next(lowlevel)
 		lowlevel[b1] = nil
 
@@ -204,16 +201,13 @@ local function flow_routing(dem, dirs, lakes, method)
 		local lowest = math.huge
 		local lnk1 = links[b1]
 		local i = 0
-		--print('Scanning basin '..b1)
 		for bn, bdata in pairs(lnk1) do
-			--print('- Link '..bn)
 			i = i + 1
 			if bdata.elev < lowest then
 				lowest = bdata.elev
 				b2 = bn
 			end
 		end
-		--print('Number of links: '..i..' vs '..nlinks[b1])
 
 		-- Add link to the graph
 		local bound = lnk1[b2]
@@ -226,49 +220,34 @@ local function flow_routing(dem, dirs, lakes, method)
 		end
 		basin_graph[bb1][bb2] = bound
 		basin_graph[bb2][bb1] = bound
-		--if bb1 == 0 then
-		--	print(bb2)
-		--elseif bb2 == 0 then
-		--	print(bb1)
-		--end
 
 		-- Merge basin b1 into b2
-		--print("Merging "..b1.." into "..b2)
 		local lnk2 = links[b2]
 		-- First, remove the link between b1 and b2
 		lnk1[b2] = nil
 		lnk2[b1] = nil
 		nlinks[b2] = nlinks[b2] - 1
-		--print('Decreasing link count of '..b2..' ('..nlinks[b2]..')')
 		if nlinks[b2] == 8 then
-			--print('Added to lowlevel')
 			lowlevel[b2] = lnk2
 		end
-		--print('Scanning neighbourg of '..b1..' to fix links')
 		-- Look for basin 1's neighbours, and add them to basin 2 if they have a lower pass
 		for bn, bdata in pairs(lnk1) do
-			--print('- Neighbour '..bn)
 			local lnkn = links[bn]
 			lnkn[b1] = nil
 
 			if lnkn[b2] then
 				nlinks[bn] = nlinks[bn] - 1
-				--print('Decreasing link count of '..bn..' ('..nlinks[bn]..')')
 				if nlinks[bn] == 8 then
-					--print('Added to lowlevel')
 					lowlevel[bn] = lnkn
 				end
 			else
 				nlinks[b2] = nlinks[b2] + 1
-				--print('Increasing link count of '..b2..' ('..nlinks[b2]..')')
 				if nlinks[b2] == 9 then
-					--print('Removed from lowlevel')
 					lowlevel[b2] = nil
 				end
 			end
 
 			if not lnkn[b2] or lnkn[b2].elev > bdata.elev then
-				--print('  - Redirecting link')
 				lnkn[b2] = bdata
 				lnk2[bn] = bdata
 			end
@@ -282,17 +261,13 @@ local function flow_routing(dem, dirs, lakes, method)
 	end
 	local reverse = {3, 4, 1, 2, [0]=0}
 	for n=1, nbasins do
-		--print(n, nbasins)
 		local b1, elev1 = next(queue)
 		queue[b1] = nil
 		basin_lake[b1] = elev1
-		--print('Scanning basin '..b1)
 		for b2, bound in pairs(basin_graph[b1]) do
-			--print('Flow '..b2..' into '..b1)
 			-- Make b2 flow into b1
 			local i = bound.i
 			local dir = bound.is_y and 3 or 4
-			--print(basin_id[i])
 			if basin_id[i] ~= b2 then
 				dir = dir - 2
 				if bound.is_y then
@@ -303,8 +278,7 @@ local function flow_routing(dem, dirs, lakes, method)
 			elseif b1 == 0 then
 				dir = 0
 			end
-			--print(basin_id[i])
-			--print('Reversing directions')
+
 			repeat
 				dir, dirs[i] = dirs[i], dir
 				if dir == 1 then
@@ -363,12 +337,10 @@ local function accumulate(dirs, waterq)
 	end
 
 	for i1=1, X*Y do
-		--print(i1, ndonors[i1])
 		if ndonors[i1] == 0 then
 			local i2 = i1
 			local dir = dirs[i2]
 			local w = waterq[i2]
-			--print(dir)
 			while dir > 0 do
 				if dir == 1 then
 					i2 = i2 + X
@@ -379,7 +351,6 @@ local function accumulate(dirs, waterq)
 				elseif dir == 4 then
 					i2 = i2 - 1
 				end
-				--print('Incrementing '..i2)
 				w = w + waterq[i2]
 				waterq[i2] = w
 

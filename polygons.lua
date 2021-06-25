@@ -88,8 +88,6 @@ local init = false
 -- On map generation, determine into which polygon every point (in 2D) will fall.
 -- Also store polygon-specific data
 local function make_polygons(minp, maxp)
-	print("Generating polygon map")
-	print(minp.x, maxp.x, minp.z, maxp.z)
 
 	local grid = mapgen_rivers.grid
 	local dem = grid.dem
@@ -113,7 +111,6 @@ local function make_polygons(minp, maxp)
 	-- Determine the minimum and maximum coordinates of the polygons that could be on the chunk, knowing that they have an average size of 'blocksize' and a maximal offset of 0.5 blocksize.
 	local xpmin, xpmax = math.max(math.floor((minp.x+map_offset.x)/blocksize - 0.5), 0), math.min(math.ceil((maxp.x+map_offset.x)/blocksize + 0.5), X-2)
 	local zpmin, zpmax = math.max(math.floor((minp.z+map_offset.z)/blocksize - 0.5), 0), math.min(math.ceil((maxp.z+map_offset.z)/blocksize + 0.5), Z-2)
-	print(xpmin, xpmax, zpmin, zpmax)
 
 	-- Iterate over the polygons
 	for xp = xpmin, xpmax do
@@ -135,9 +132,6 @@ local function make_polygons(minp, maxp)
 				(offset_z[iC]+zp+1) * blocksize - map_offset.z,
 				(offset_z[iD]+zp+1) * blocksize - map_offset.z,
 			}
-			if xp==xpmin and zp==zpmin then
-				print(xp, zp, poly_x[1], poly_z[1])
-			end
 			local polygon = {x=poly_x, z=poly_z, i={iA, iB, iC, iD}}
 
 			local bounds = {} -- Will be a list of the intercepts of polygon edges for every Z position (scanline algorithm)

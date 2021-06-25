@@ -2,27 +2,18 @@
 
 local function get_box_size(sigma, n)
 	local v = sigma^2 / n
-	--print('v: '..v)
 	local r_ideal = ((12*v + 1) ^ 0.5 - 1) / 2
-	--print('r_ideal: '..r_ideal)
 	local r_down = math.floor(r_ideal)
-	--print('r_down: '..r_down)
 	local r_up = math.ceil(r_ideal)
-	--print('r_up: '..r_up)
 	local v_down = ((2*r_down+1)^2 - 1) / 12
-	--print('v_down: '..v_down)
 	local v_up = ((2*r_up+1)^2 - 1) / 12
-	--print('v_up: '..v_up)
 	local m_ideal = (v - v_down) / (v_up - v_down) * n
-	--print('m_ideal: '..m_ideal)
 	local m = math.floor(m_ideal+0.5)
-	--print('m: '..m)
 
 	local sizes = {}
 	for i=1, n do
 		sizes[i] = i<=m and 2*r_up+1 or 2*r_down+1
 	end
-	--print('sizes: '..table.concat(sizes, ', '))
 
 	return sizes
 end

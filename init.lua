@@ -38,7 +38,13 @@ local noise_heat_blend_map = {}
 local mapsize
 local init = false
 
+local sumtime = 0
+local sumtime2 = 0
+local ngen = 0
+
 local function generate(minp, maxp, seed)
+	print(("[mapgen_rivers] Generating from %s to %s"):format(minetest.pos_to_string(minp), minetest.pos_to_string(maxp)))
+
 	local chulens = {
 		x = maxp.x-minp.x+1,
 		y = maxp.y-minp.y+1,
@@ -63,6 +69,7 @@ local function generate(minp, maxp, seed)
 		init = true
 	end
 
+	local t0 = os.clock()
 	local minp2d = {x=minp.x, y=minp.z}
 	if use_distort then
 		noise_x_obj:get_3d_map_flat(minp, noise_x_map)
@@ -130,7 +137,7 @@ local function generate(minp, maxp, seed)
 	local incrZ = mapsize.x*mapsize.y - mapsize.x*incrX - mapsize.x*mapsize.y*incrY
 
 	local i2d = 1
-	
+
 	for z = minp.z, maxp.z do
 		for x = minp.x, maxp.x do
 			local ivm = a:index(x, minp.y, z)
@@ -221,6 +228,18 @@ local function generate(minp, maxp, seed)
 	vm:calc_lighting()
 	vm:update_liquids()
 	vm:write_to_map()
+	local t1 = os.clock()
+
+	local t = t1-t0
+	ngen = ngen + 1
+	sumtime = sumtime + t
+	sumtime2 = sumtime2 + t*t
+	print(("[mapgen_rivers] Done in %5.3f s"):format(t))
 end
 
 minetest.register_on_generated(generate)
+minetest.register_on_shutdown(function()
+	local avg = sumtime / ngen
+	local std = math.sqrt(sumtime2/ngen - avg*avg)
+	print(("[mapgen_rivers] Mapgen statistics:\n- Mapgen calls: %4d\n- Mean time: %5.3f s\n- Standard deviation: %5.3f s"):format(avg, std))
+end)
