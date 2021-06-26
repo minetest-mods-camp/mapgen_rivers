@@ -18,33 +18,59 @@ local function offset_converter(o)
 	return (o + 0.5) * (1/256)
 end
 
+local load_all = mapgen_rivers.settings.load_all
+
 -- Try to read file 'size'
 local sfile = io.open(world_data_path..'size', 'r')
+local first_mapgen = true
 if sfile then
 	X, Z = tonumber(sfile:read('*l')), tonumber(sfile:read('*l'))
 	sfile:close()
+	first_mapgen = false
+end
 
-	minetest.register_on_mods_loaded(function()
-		local grid = mapgen_rivers.grid
-		grid.dem = mapgen_rivers.interactive_loader('dem', 2, true, X*Z)
-		grid.lakes = mapgen_rivers.interactive_loader('lakes', 2, true, X*Z)
-		grid.dirs = mapgen_rivers.interactive_loader('dirs', 1, false, X*Z)
-		grid.rivers = mapgen_rivers.interactive_loader('rivers', 4, false, X*Z)
-
-		grid.offset_x = mapgen_rivers.interactive_loader('offset_x', 1, true, X*Z, offset_converter)
-		grid.offset_y = mapgen_rivers.interactive_loader('offset_y', 1, true, X*Z, offset_converter)
-	end)
-else
+if first_mapgen then
 	-- Generate a map!!
 	local pregenerate = dofile(mapgen_rivers.modpath .. '/pregenerate.lua')
 	minetest.register_on_mods_loaded(function()
-		pregenerate()
-		local offset_x = mapgen_rivers.grid.offset_x
-		local offset_y = mapgen_rivers.grid.offset_y
-		for i=1, X*Z do
-			offset_x[i] = offset_converter(offset_x[i])
-			offset_y[i] = offset_converter(offset_y[i])
+		print('Generating grid')
+		pregenerate(load_all)
+
+		if load_all then
+			local offset_x = mapgen_rivers.grid.offset_x
+			local offset_y = mapgen_rivers.grid.offset_y
+			for i=1, X*Z do
+				offset_x[i] = offset_converter(offset_x[i])
+				offset_y[i] = offset_converter(offset_y[i])
+			end
 		end
+	end)
+end
+
+-- if data not already loaded
+if not (first_mapgen and load_all) then
+	local load_map
+	if load_all then
+		load_map = mapgen_rivers.load_map
+	else
+		load_map = mapgen_rivers.interactive_loader
+	end
+
+	minetest.register_on_mods_loaded(function()
+		if load_all then
+			print('Loading full grid')
+		else
+			print('Loading grid as interactive loaders')
+		end
+		local grid = mapgen_rivers.grid
+
+		grid.dem = load_map('dem', 2, true, X*Z)
+		grid.lakes = load_map('lakes', 2, true, X*Z)
+		grid.dirs = load_map('dirs', 1, false, X*Z)
+		grid.rivers = load_map('rivers', 4, false, X*Z)
+
+		grid.offset_x = load_map('offset_x', 1, true, X*Z, offset_converter)
+		grid.offset_y = load_map('offset_y', 1, true, X*Z, offset_converter)
 	end)
 end
 

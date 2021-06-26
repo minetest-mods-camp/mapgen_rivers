@@ -61,6 +61,8 @@ mapgen_rivers.settings = {
 	tectonic_speed = def_setting('tectonic_speed', 'number', 70),
 	evol_time = def_setting('evol_time', 'number', 10),
 	evol_time_step = def_setting('evol_time_step', 'number', 1),
+
+    load_all = mtsettings:get_bool('mapgen_rivers_load_all')
 }
 
 local function write_settings()

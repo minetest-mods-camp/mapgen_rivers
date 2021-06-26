@@ -46,6 +46,11 @@ mapgen_rivers_glacier_widening_factor (Glacier widening factor) float 8.0 1.0 20
 #    This results in mountains being more covered by snow.
 mapgen_rivers_elevation_chill (Elevation chill) float 0.25 0.0 5.0
 
+#    If enabled, loads all grid data in memory at init time.
+#    If disabled, data will be loaded on request and cached in memory.
+#    It's recommended to disable it for very large maps (> 2000 grid nodes or so)
+mapgen_rivers_load_all (Load all data in memory) bool false
+
 [Landscape evolution parameters]
 
 #    Modelled landscape evolution time, in arbitrary units

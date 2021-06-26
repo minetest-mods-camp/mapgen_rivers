@@ -13,7 +13,7 @@ local time_step = mapgen_rivers.settings.evol_time_step
 local niter = math.ceil(time/time_step)
 time_step = time / niter
 
-local function pregenerate()
+local function pregenerate(keep_loaded)
 	local grid = mapgen_rivers.grid
 	local size = grid.size
 
@@ -66,12 +66,14 @@ local function pregenerate()
 	sfile:write(size.x..'\n'..size.y)
 	sfile:close()
 
-    grid.dem = model.dem
-    grid.lakes = model.lakes
-    grid.dirs = model.dirs
-    grid.rivers = model.rivers
-    grid.offset_x = offset_x
-    grid.offset_y = offset_y
+	if keep_loaded then
+	    grid.dem = model.dem
+	    grid.lakes = model.lakes
+	    grid.dirs = model.dirs
+	    grid.rivers = model.rivers
+	    grid.offset_x = offset_x
+	    grid.offset_y = offset_y
+	end
 end
 
 return pregenerate

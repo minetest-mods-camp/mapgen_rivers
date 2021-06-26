@@ -64,6 +64,9 @@ local loader_mt = {
 function mapgen_rivers.interactive_loader(filename, bytes, signed, size, converter)
 	local file = io.open(worldpath .. filename, 'rb')
 	if file then
+		minetest.register_on_shutdown(function()
+			file:close()
+		end)
 		converter = converter or false
 		return setmetatable({file=file, bytes=bytes, signed=signed, size=size, conv=converter}, loader_mt)
 	end
