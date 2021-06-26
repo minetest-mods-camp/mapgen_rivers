@@ -241,5 +241,5 @@ minetest.register_on_generated(generate)
 minetest.register_on_shutdown(function()
 	local avg = sumtime / ngen
 	local std = math.sqrt(sumtime2/ngen - avg*avg)
-	print(("[mapgen_rivers] Mapgen statistics:\n- Mapgen calls: %4d\n- Mean time: %5.3f s\n- Standard deviation: %5.3f s"):format(avg, std))
+	print(("[mapgen_rivers] Mapgen statistics:\n- Mapgen calls: %4d\n- Mean time: %5.3f s\n- Standard deviation: %5.3f s"):format(ngen, avg, std))
 end)
