@@ -14,34 +14,39 @@ mapgen_rivers.grid = {}
 local X = 1000
 local Z = 1000
 
+local function offset_converter(o)
+	return (o + 0.5) * (1/256)
+end
+
 -- Try to read file 'size'
 local sfile = io.open(world_data_path..'size', 'r')
 if sfile then
 	X, Z = tonumber(sfile:read('*l')), tonumber(sfile:read('*l'))
 	sfile:close()
+
 	minetest.register_on_mods_loaded(function()
 		local grid = mapgen_rivers.grid
-		grid.dem = mapgen_rivers.load_map('dem', 2, true, X*Z)
-		grid.lakes = mapgen_rivers.load_map('lakes', 2, true, X*Z)
-		grid.dirs = mapgen_rivers.load_map('dirs', 1, false, X*Z)
-		grid.rivers = mapgen_rivers.load_map('rivers', 4, false, X*Z)
+		grid.dem = mapgen_rivers.interactive_loader('dem', 2, true, X*Z)
+		grid.lakes = mapgen_rivers.interactive_loader('lakes', 2, true, X*Z)
+		grid.dirs = mapgen_rivers.interactive_loader('dirs', 1, false, X*Z)
+		grid.rivers = mapgen_rivers.interactive_loader('rivers', 4, false, X*Z)
 
-		grid.offset_x = mapgen_rivers.load_map('offset_x', 1, true, X*Z)
-		grid.offset_y = mapgen_rivers.load_map('offset_y', 1, true, X*Z)
+		grid.offset_x = mapgen_rivers.interactive_loader('offset_x', 1, true, X*Z, offset_converter)
+		grid.offset_y = mapgen_rivers.interactive_loader('offset_y', 1, true, X*Z, offset_converter)
 	end)
 else
 	-- Generate a map!!
 	local pregenerate = dofile(mapgen_rivers.modpath .. '/pregenerate.lua')
-	minetest.register_on_mods_loaded(pregenerate)
+	minetest.register_on_mods_loaded(function()
+		pregenerate()
+		local offset_x = mapgen_rivers.grid.offset_x
+		local offset_y = mapgen_rivers.grid.offset_y
+		for i=1, X*Z do
+			offset_x[i] = offset_converter(offset_x[i])
+			offset_y[i] = offset_converter(offset_y[i])
+		end
+	end)
 end
-
-minetest.register_on_mods_loaded(function()
-	local offset_x, offset_y = mapgen_rivers.grid.offset_x, mapgen_rivers.grid.offset_y
-	for i=1, #offset_x do
-		offset_x[i] = (offset_x[i]+0.5) * (1/256)
-		offset_y[i] = (offset_y[i]+0.5) * (1/256)
-	end
-end)
 
 mapgen_rivers.grid.size = {x=X, y=Z}
 

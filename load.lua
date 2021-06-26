@@ -1,6 +1,6 @@
 local worldpath = mapgen_rivers.world_data_path
 
-function mapgen_rivers.load_map(filename, bytes, signed, size)
+function mapgen_rivers.load_map(filename, bytes, signed, size, converter)
 	local file = io.open(worldpath .. filename, 'rb')
 	local data = file:read('*all')
 	if #data < bytes*size then
@@ -26,7 +26,47 @@ function mapgen_rivers.load_map(filename, bytes, signed, size)
 	end
 	file:close()
 
+	if converter then
+		for i=1, size do
+			map[i] = converter(map[i])
+		end
+	end
+
 	return map
+end
+
+local sbyte = string.byte
+
+local loader_mt = {
+	__index = function(loader, i)
+		local file = loader.file
+		local bytes = loader.bytes
+		file:seek('set', (i-1)*bytes)
+		local strnum = file:read(bytes)
+
+		local n = sbyte(strnum, 1)
+		if loader.signed and n >= 128 then
+			n = n - 256
+		end
+
+		for j=2, bytes do
+			n = n*256 + sbyte(strnum, j)
+		end
+
+		if loader.conv then
+			n = loader.conv(n)
+		end
+		loader[i] = n
+		return n
+	end,
+}
+
+function mapgen_rivers.interactive_loader(filename, bytes, signed, size, converter)
+	local file = io.open(worldpath .. filename, 'rb')
+	if file then
+		converter = converter or false
+		return setmetatable({file=file, bytes=bytes, signed=signed, size=size, conv=converter}, loader_mt)
+	end
 end
 
 function mapgen_rivers.write_map(filename, data, bytes)
