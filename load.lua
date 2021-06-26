@@ -6,19 +6,20 @@ function mapgen_rivers.load_map(filename, bytes, signed, size)
 	if #data < bytes*size then
 		data = minetest.decompress(data)
 	end
+	local sbyte = string.byte
 
 	local map = {}
 
 	for i=1, size do
-		local i0, i1 = (i-1)*bytes+1, i*bytes
+		local i0 = (i-1)*bytes+1
 		local elements = {data:byte(i0, i1)}
-		local n = elements[1]
+		local n = sbyte(data, i0)
 		if signed and n >= 128 then
 			n = n - 256
 		end
 
-		for j=2, bytes do
-			n = n*256 + elements[j]
+		for j=1, bytes-1 do
+			n = n*256 + sbyte(data, i0+j)
 		end
 
 		map[i] = n
