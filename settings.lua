@@ -42,7 +42,7 @@ local def_setting = mapgen_rivers.define_setting
 
 mapgen_rivers.settings = {
 	center = def_setting('center', 'bool', true),
-	blocksize = def_setting('blocksize', 'number', 12),
+	blocksize = def_setting('blocksize', 'number', 15),
 	sea_level = tonumber(minetest.get_mapgen_setting('water_level')),
 	min_catchment = def_setting('min_catchment', 'number', 25),
 	max_catchment = def_setting('max_catchment', 'number', 40000),
@@ -57,6 +57,7 @@ mapgen_rivers.settings = {
 		K = def_setting('river_erosion_coef', 'number', 0.5),
 		m = def_setting('river_erosion_power', 'number', 0.4),
 		d = def_setting('diffusive_erosion', 'number', 0.5),
+		compensation_radius = def_setting('compensation_radius', 'number', 50),
 	},
 	tectonic_speed = def_setting('tectonic_speed', 'number', 70),
 	evol_time = def_setting('evol_time', 'number', 10),

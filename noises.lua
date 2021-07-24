@@ -9,6 +9,7 @@ mapgen_rivers.noise_params = {
 		spread = {x=2048, y=2048, z=2048},
 		persist = 0.6,
 		lacunarity = 2,
+		flags = "eased",
 	}),
 
 	distort_x = def_setting('np_distort_x', 'noise', {
