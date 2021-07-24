@@ -1,5 +1,24 @@
 local mtsettings = minetest.settings
 local mgrsettings = Settings(minetest.get_worldpath() .. '/mapgen_rivers.conf')
+
+mapgen_rivers.version = "1.0"
+
+local previous_version_mt = mtsettings:get("mapgen_rivers_version") or "0.0"
+local previous_version_mgr = mgrsettings:get("version") or "0.0"
+
+if mapgen_rivers.version ~= previous_version_mt or mapgen_rivers.version ~= previous_version_mgr then
+    local compat_mt, compat_mgr = dofile(minetest.get_modpath(minetest.get_current_modname()) .. "/compatibility.lua")
+    if mapgen_rivers.version ~= previous_version_mt then
+        compat_mt(mtsettings)
+    end
+    if mapgen_rivers.version ~= previous_version_mgr then
+        compat_mgr(mgrsettings)
+    end
+end
+
+mtsettings:set("mapgen_rivers_version", mapgen_rivers.version)
+mgrsettings:set("version", mapgen_rivers.version)
+
 function mapgen_rivers.define_setting(name, dtype, default)
 	if dtype == "number" or dtype == "string" then
 		local v = mgrsettings:get(name)
