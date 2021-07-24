@@ -72,6 +72,8 @@ mapgen_rivers.settings = {
 	glacier_factor = def_setting('glacier_factor', 'number', 8),
 	elevation_chill = def_setting('elevation_chill', 'number', 0.25),
 
+    grid_x_size = def_setting('grid_x_size', 'number', 1000),
+    grid_z_size = def_setting('grid_z_size', 'number', 1000),
 	evol_params = {
 		K = def_setting('river_erosion_coef', 'number', 0.5),
 		m = def_setting('river_erosion_power', 'number', 0.4),

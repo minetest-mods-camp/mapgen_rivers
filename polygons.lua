@@ -11,8 +11,8 @@ dofile(modpath .. 'load.lua')
 
 mapgen_rivers.grid = {}
 
-local X = 1000
-local Z = 1000
+local X = mapgen_rivers.settings.grid_x_size
+local Z = mapgen_rivers.settings.grid_z_size
 
 local function offset_converter(o)
 	return (o + 0.5) * (1/256)

@@ -9,6 +9,14 @@ mapgen_rivers_center (Center map) bool true
 #    the actual size of the map will be 12000.
 mapgen_rivers_blocksize (Block size) float 15.0 2.0 100.0
 
+#    X size of the grid being generated
+#    Actual size of the map is grid_x_size * blocksize
+mapgen_rivers_grid_x_size (Grid X size) int 1000 50 5000
+
+#    Z size of the grid being generated
+#    Actual size of the map is grid_z_size * blocksize
+mapgen_rivers_grid_z_size (Grid Z size) int 1000 50 5000
+
 #    Minimal catchment area for a river to be drawn, in square nodes
 #    Lower value means bigger river density
 mapgen_rivers_min_catchment (Minimal catchment area) float 3600.0 100.0 1000000.0
