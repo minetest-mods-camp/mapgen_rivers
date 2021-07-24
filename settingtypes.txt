@@ -9,15 +9,15 @@ mapgen_rivers_center (Center map) bool true
 #    the actual size of the map will be 12000.
 mapgen_rivers_blocksize (Block size) float 15.0 2.0 100.0
 
-#    Minimal catchment area for a river to be drawn, in grid cells
-#    (1 cell = blocksize x blocksize).
+#    Minimal catchment area for a river to be drawn, in square nodes
 #    Lower value means bigger river density
-mapgen_rivers_min_catchment (Minimal catchment area) float 25.0 1.0 1000.0
+mapgen_rivers_min_catchment (Minimal catchment area) float 3600.0 100.0 1000000.0
 
-#    Catchment area in grid cells (1 grid cell = blocksize x blocksize)
-#    at which rivers reach their maximal width of 2*blocksize.
+#    Coefficient describing how rivers widen when merging.
+#    Riwer width is a power law W = a*D^p. D is river flow and p is this parameter.
 #    Higher value means a river needs to receive more tributaries to grow in width.
-mapgen_rivers_max_catchment (Maximal catchment area) float 40000.0 1000.0 10000000.0
+#    Note that a river can never exceed 2*blocksize.
+mapgen_rivers_river_widening_power (River widening power) float 0.5 0.0 1.0
 
 #    Lateral slope of the riverbed.
 #    Higher value means deeper rivers.

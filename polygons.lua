@@ -90,11 +90,9 @@ if mapgen_rivers.settings.center then
 	map_offset.z = blocksize*Z/2
 end
 
--- Width coefficients: coefficients solving
---   wfactor * min_catchment ^ wpower = 1/(2*blocksize)
---   wfactor * max_catchment ^ wpower = 1
-local wpower = math.log(2*blocksize)/math.log(max_catchment/min_catchment)
-local wfactor = 1 / max_catchment ^ wpower
+local min_catchment = mapgen_rivers.settings.min_catchment / (blocksize*blocksize)
+local wpower = mapgen_rivers.settings.river_widening_power
+local wfactor = 1/(2*blocksize * min_catchment^wpower)
 local function river_width(flow)
 	flow = math.abs(flow)
 	if flow < min_catchment then
