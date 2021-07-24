@@ -40,9 +40,9 @@ local function pregenerate(keep_loaded)
 		model:flow()
 		model:erode(time_step)
 		if i < niter then
-		    if tectonic_step ~= 0 then
-			    nobj_base:get_3d_map_flat({x=0, y=tectonic_step*i, z=0}, ref_dem)
-		    end
+			if tectonic_step ~= 0 then
+				nobj_base:get_3d_map_flat({x=0, y=tectonic_step*i, z=0}, ref_dem)
+			end
 			model:isostasy()
 		end
 	end
@@ -67,12 +67,12 @@ local function pregenerate(keep_loaded)
 	sfile:close()
 
 	if keep_loaded then
-	    grid.dem = model.dem
-	    grid.lakes = model.lakes
-	    grid.dirs = model.dirs
-	    grid.rivers = model.rivers
-	    grid.offset_x = offset_x
-	    grid.offset_y = offset_y
+		grid.dem = model.dem
+		grid.lakes = model.lakes
+		grid.dirs = model.dirs
+		grid.rivers = model.rivers
+		grid.offset_x = offset_x
+		grid.offset_y = offset_y
 	end
 end
 

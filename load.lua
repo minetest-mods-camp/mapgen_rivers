@@ -73,28 +73,28 @@ function mapgen_rivers.interactive_loader(filename, bytes, signed, size, convert
 end
 
 function mapgen_rivers.write_map(filename, data, bytes)
-    local size = #data
-    local file = io.open(worldpath .. filename, 'wb')
-    local mfloor = math.floor
-    local schar = string.char
-    local upack = unpack
+	local size = #data
+	local file = io.open(worldpath .. filename, 'wb')
+	local mfloor = math.floor
+	local schar = string.char
+	local upack = unpack
 
-    local bytelist = {}
-    for j=1, bytes do
-        bytelist[j] = 0
-    end
+	local bytelist = {}
+	for j=1, bytes do
+		bytelist[j] = 0
+	end
 
-    for i=1, size do
-        local n = mfloor(data[i])
-        data[i] = n
-        for j=bytes, 2, -1 do
-            bytelist[j] = n % 256
-            n = mfloor(n / 256)
-        end
-        bytelist[1] = n % 256
+	for i=1, size do
+		local n = mfloor(data[i])
+		data[i] = n
+		for j=bytes, 2, -1 do
+			bytelist[j] = n % 256
+			n = mfloor(n / 256)
+		end
+		bytelist[1] = n % 256
 
-        file:write(schar(upack(bytelist)))
-    end
+		file:write(schar(upack(bytelist)))
+	end
 
-    file:close()
+	file:close()
 end

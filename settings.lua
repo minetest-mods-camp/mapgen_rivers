@@ -7,13 +7,13 @@ local previous_version_mt = mtsettings:get("mapgen_rivers_version") or "0.0"
 local previous_version_mgr = mgrsettings:get("version") or "0.0"
 
 if mapgen_rivers.version ~= previous_version_mt or mapgen_rivers.version ~= previous_version_mgr then
-    local compat_mt, compat_mgr = dofile(minetest.get_modpath(minetest.get_current_modname()) .. "/compatibility.lua")
-    if mapgen_rivers.version ~= previous_version_mt then
-        compat_mt(mtsettings)
-    end
-    if mapgen_rivers.version ~= previous_version_mgr then
-        compat_mgr(mgrsettings)
-    end
+	local compat_mt, compat_mgr = dofile(minetest.get_modpath(minetest.get_current_modname()) .. "/compatibility.lua")
+	if mapgen_rivers.version ~= previous_version_mt then
+		compat_mt(mtsettings)
+	end
+	if mapgen_rivers.version ~= previous_version_mgr then
+		compat_mgr(mgrsettings)
+	end
 end
 
 mtsettings:set("mapgen_rivers_version", mapgen_rivers.version)
@@ -72,8 +72,8 @@ mapgen_rivers.settings = {
 	glacier_factor = def_setting('glacier_factor', 'number', 8),
 	elevation_chill = def_setting('elevation_chill', 'number', 0.25),
 
-    grid_x_size = def_setting('grid_x_size', 'number', 1000),
-    grid_z_size = def_setting('grid_z_size', 'number', 1000),
+	grid_x_size = def_setting('grid_x_size', 'number', 1000),
+	grid_z_size = def_setting('grid_z_size', 'number', 1000),
 	evol_params = {
 		K = def_setting('river_erosion_coef', 'number', 0.5),
 		m = def_setting('river_erosion_power', 'number', 0.4),
@@ -84,7 +84,7 @@ mapgen_rivers.settings = {
 	evol_time = def_setting('evol_time', 'number', 10),
 	evol_time_step = def_setting('evol_time_step', 'number', 1),
 
-    load_all = mtsettings:get_bool('mapgen_rivers_load_all')
+	load_all = mtsettings:get_bool('mapgen_rivers_load_all')
 }
 
 local function write_settings()
