@@ -19,7 +19,7 @@ except ImportError: # No module matplotlib
     has_matplotlib = False
 
 if has_matplotlib:
-    def view_map(dem, lakes, scale=1, sea_level=0.0, title=None):
+    def view_map(dem, lakes, scale=1, center=False, sea_level=0.0, title=None):
         lakes_sea = np.maximum(lakes, sea_level)
         water = np.maximum(lakes_sea - dem, 0)
         max_elev = dem.max()
@@ -31,7 +31,10 @@ if has_matplotlib:
         rgb = ls.shade(dem, cmap=cmap1, vert_exag=1/scale, blend_mode='soft', norm=norm_ground)
 
         (X, Y) = dem.shape
-        extent = (0, Y*scale, 0, X*scale)
+        if center:
+            extent = (-(Y+1)*scale/2, (Y-1)*scale/2, -(X+1)*scale/2, (X-1)*scale/2)
+        else:
+            extent = (-0.5*scale, (Y-0.5)*scale, -0.5*scale, (X-0.5)*scale)
         plt.imshow(np.flipud(rgb), extent=extent, interpolation='antialiased')
         alpha = (water > 0).astype('u1')
         plt.imshow(np.flipud(water), alpha=np.flipud(alpha), cmap=cmap2, extent=extent, vmin=0, vmax=max_depth, interpolation='antialiased')
