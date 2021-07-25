@@ -21,9 +21,7 @@ local function pregenerate(keep_loaded)
 	np_base.seed = (np_base.seed or 0) + seed
 
 	local nobj_base = PerlinNoiseMap(np_base, {x=size.x, y=1, z=size.y})
-	--nobj_base:calc_3d_map({x=0, y=0, z=0})
 
-	--local dem = nobj_base:get_map_slice({z=1}, {z=1})
 	local dem = nobj_base:get_3d_map_flat({x=0, y=0, z=0})
 	dem.X = size.x
 	dem.Y = size.y
@@ -34,7 +32,7 @@ local function pregenerate(keep_loaded)
 
 	local tectonic_step = tectonic_speed * time_step
 	for i=1, niter do
-		--nobj_base:get_map_slice({z=i+1}, {z=1}, ref_dem)
+		print("[mapgen_rivers] Iteration " .. i .. " of " .. niter)
 
 		model:diffuse(time_step)
 		model:flow()

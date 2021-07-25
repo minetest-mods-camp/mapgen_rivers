@@ -33,7 +33,7 @@ if first_mapgen then
 	-- Generate a map!!
 	local pregenerate = dofile(mapgen_rivers.modpath .. '/pregenerate.lua')
 	minetest.register_on_mods_loaded(function()
-		print('Generating grid')
+		print('[mapgen_rivers] Generating grid')
 		pregenerate(load_all)
 
 		if load_all then
@@ -58,9 +58,9 @@ if not (first_mapgen and load_all) then
 
 	minetest.register_on_mods_loaded(function()
 		if load_all then
-			print('Loading full grid')
+			print('[mapgen_rivers] Loading full grid')
 		else
-			print('Loading grid as interactive loaders')
+			print('[mapgen_rivers] Loading grid as interactive loaders')
 		end
 		local grid = mapgen_rivers.grid
 
