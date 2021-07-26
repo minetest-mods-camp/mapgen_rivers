@@ -31,6 +31,7 @@ local function pregenerate(keep_loaded)
 	local ref_dem = model:define_isostasy(dem)
 
 	local tectonic_step = tectonic_speed * time_step
+	collectgarbage()
 	for i=1, niter do
 		print("[mapgen_rivers] Iteration " .. i .. " of " .. niter)
 
@@ -43,6 +44,8 @@ local function pregenerate(keep_loaded)
 			end
 			model:isostasy()
 		end
+
+		collectgarbage()
 	end
 	model:flow()
 
@@ -72,6 +75,7 @@ local function pregenerate(keep_loaded)
 		grid.offset_x = offset_x
 		grid.offset_y = offset_y
 	end
+	collectgarbage()
 end
 
 return pregenerate
