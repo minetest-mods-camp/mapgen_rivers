@@ -9,6 +9,12 @@ Its main particularity compared to conventional Minetest mapgens is that rivers 
 
 It used to be composed of a Python script doing pre-generation, and a Lua mod reading the pre-generation output and generating the map. The code has been rewritten in full Lua for version 1.0 (July 2021), and is now usable out-of-the-box as any other Minetest mod.
 
+# Author and license
+License: GNU LGPLv3.0
+
+Code: Gaël de Sailly
+Flow routing algorithm concept (in `terrainlib/rivermapper.lua`): Cordonnier, G., Bovy, B., & Braun, J. (2019). A versatile, linear complexity algorithm for flow routing in topographies with depressions. Earth Surface Dynamics, 7(2), 549-562.
+
 # Requirements
 Mod dependencies: `default` required, and [`biomegen`](https://github.com/Gael-de-Sailly/biomegen) optional (provides biome system).
 
