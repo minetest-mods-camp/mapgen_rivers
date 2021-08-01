@@ -5,7 +5,7 @@ Semi-procedural map generator for Minetest 5.x. It aims to create realistic and 
 
 Its main particularity compared to conventional Minetest mapgens is that rivers that flow strictly downhill, and combine together to form wider rivers, until they reach the sea. Another notable feature is the possibility of large lakes above sea level.
 
-![Screenshot](https://user-images.githubusercontent.com/6905002/98825953-6289d980-2435-11eb-9e0b-704a95663ce0.png)
+![Screenshot](https://content.minetest.net/uploads/fff09f2269.png)
 
 It used to be composed of a Python script doing pre-generation, and a Lua mod reading the pre-generation output and generating the map. The code has been rewritten in full Lua for version 1.0 (July 2021), and is now usable out-of-the-box as any other Minetest mod.
 
