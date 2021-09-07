@@ -4,6 +4,11 @@ local modpath = minetest.get_modpath(minetest.get_current_modname()) .. '/'
 mapgen_rivers.modpath = modpath
 mapgen_rivers.world_data_path = minetest.get_worldpath() .. '/river_data/'
 
+if minetest.get_mapgen_setting("mg_name") ~= "singlenode" then
+	minetest.set_mapgen_setting("mg_name", "singlenode", true)
+	print("[mapgen_rivers] Mapgen set to singlenode")
+end
+
 dofile(modpath .. 'settings.lua')
 
 local sea_level = mapgen_rivers.settings.sea_level
