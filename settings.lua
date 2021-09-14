@@ -1,7 +1,7 @@
 local mtsettings = minetest.settings
 local mgrsettings = Settings(minetest.get_worldpath() .. '/mapgen_rivers.conf')
 
-mapgen_rivers.version = "1.0"
+mapgen_rivers.version = "1.0.1"
 
 local previous_version_mt = mtsettings:get("mapgen_rivers_version") or "0.0"
 local previous_version_mgr = mgrsettings:get("version") or "0.0"

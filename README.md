@@ -1,5 +1,5 @@
 # Map Generator with Rivers
-`mapgen_rivers v1.0` by Gaël de Sailly.
+`mapgen_rivers v1.0.1` by Gaël de Sailly.
 
 Semi-procedural map generator for Minetest 5.x. It aims to create realistic and nice-looking landscapes for the game, focused on river networks. It is based on algorithms modelling water flow and river erosion at a broad scale, similar to some used by researchers in Earth Sciences. It is taking some inspiration from [Fastscape](https://github.com/fastscape-lem/fastscape).
 
