@@ -23,7 +23,7 @@ mapgen_rivers_min_catchment (Minimal catchment area) float 3600.0 100.0 1000000.
 
 #    Coefficient describing how rivers widen when merging.
 #    Riwer width is a power law W = a*D^p. D is river flow and p is this parameter.
-#    Higher value means a river needs to receive more tributaries to grow in width.
+#    Higher value means that a river will grow more when receiving a tributary.
 #    Note that a river can never exceed 2*blocksize.
 mapgen_rivers_river_widening_power (River widening power) float 0.5 0.0 1.0
 
