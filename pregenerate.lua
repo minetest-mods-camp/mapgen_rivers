@@ -33,7 +33,7 @@ local function pregenerate(keep_loaded)
 	local tectonic_step = tectonic_speed * time_step
 	collectgarbage()
 	for i=1, niter do
-		print("[mapgen_rivers] Iteration " .. i .. " of " .. niter)
+		minetest.log("info", "[mapgen_rivers] Iteration " .. i .. " of " .. niter)
 
 		model:diffuse(time_step)
 		model:flow()

@@ -6,7 +6,7 @@ mapgen_rivers.world_data_path = minetest.get_worldpath() .. '/river_data/'
 
 if minetest.get_mapgen_setting("mg_name") ~= "singlenode" then
 	minetest.set_mapgen_setting("mg_name", "singlenode", true)
-	print("[mapgen_rivers] Mapgen set to singlenode")
+	minetest.log("warning", "[mapgen_rivers] Mapgen set to singlenode")
 end
 
 dofile(modpath .. 'settings.lua')
@@ -51,7 +51,7 @@ local sumtime2 = 0
 local ngen = 0
 
 local function generate(minp, maxp, seed)
-	print(("[mapgen_rivers] Generating from %s to %s"):format(minetest.pos_to_string(minp), minetest.pos_to_string(maxp)))
+	minetest.log("info", ("[mapgen_rivers] Generating from %s to %s"):format(minetest.pos_to_string(minp), minetest.pos_to_string(maxp)))
 
 	local chulens = {
 		x = maxp.x-minp.x+1,
@@ -141,8 +141,8 @@ local function generate(minp, maxp, seed)
 			sumtime = sumtime + t
 			sumtime2 = sumtime2 + t*t
 
-			print("[mapgen_rivers] Skipping empty chunk (fully above ground level)")
-			print(("[mapgen_rivers] Done in %5.3f s"):format(t))
+			minetest.log("verbose", "[mapgen_rivers] Skipping empty chunk (fully above ground level)")
+			minetest.log("verbose", ("[mapgen_rivers] Done in %5.3f s"):format(t))
 			return
 		end
 	end
@@ -264,12 +264,12 @@ local function generate(minp, maxp, seed)
 	ngen = ngen + 1
 	sumtime = sumtime + t
 	sumtime2 = sumtime2 + t*t
-	print(("[mapgen_rivers] Done in %5.3f s"):format(t))
+	minetest.log("verbose", ("[mapgen_rivers] Done in %5.3f s"):format(t))
 end
 
 minetest.register_on_generated(generate)
 minetest.register_on_shutdown(function()
 	local avg = sumtime / ngen
 	local std = math.sqrt(sumtime2/ngen - avg*avg)
-	print(("[mapgen_rivers] Mapgen statistics:\n- Mapgen calls: %4d\n- Mean time: %5.3f s\n- Standard deviation: %5.3f s"):format(ngen, avg, std))
+	minetest.log("action", ("[mapgen_rivers] Mapgen statistics:\n- Mapgen calls: %4d\n- Mean time: %5.3f s\n- Standard deviation: %5.3f s"):format(ngen, avg, std))
 end)

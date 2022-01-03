@@ -73,7 +73,7 @@ for name, np in pairs(mapgen_rivers.noise_params) do
 	if lac > 1 then
 		local omax = math.floor(math.log(math.min(np.spread.x, np.spread.y, np.spread.z)) / math.log(lac))+1
 		if np.octaves > omax then
-			print("[mapgen_rivers] Noise " .. name .. ": 'octaves' reduced to " .. omax)
+			minetest.log("warning", "[mapgen_rivers] Noise " .. name .. ": 'octaves' reduced to " .. omax)
 			np.octaves = omax
 		end
 	end
