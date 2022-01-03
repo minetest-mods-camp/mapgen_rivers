@@ -123,6 +123,30 @@ local function generate(minp, maxp, seed)
 		terrain_map, lake_map = heightmaps(minp, maxp)
 	end
 
+	-- Check that there is at least one position that reaches min y
+	if minp.y > sea_level then
+		local y0 = minp.y
+		local is_empty = true
+		for i=1, #terrain_map do
+			if terrain_map[i] >= y0 or lake_map[i] >= y0 then
+				is_empty = false
+				break
+			end
+		end
+
+		-- If not, skip chunk
+		if is_empty then
+			local t = os.clock() - t0
+			ngen = ngen + 1
+			sumtime = sumtime + t
+			sumtime2 = sumtime2 + t*t
+
+			print("[mapgen_rivers] Skipping empty chunk (fully above ground level)")
+			print(("[mapgen_rivers] Done in %5.3f s"):format(t))
+			return
+		end
+	end
+
 	local c_stone = minetest.get_content_id("default:stone")
 	local c_dirt = minetest.get_content_id("default:dirt")
 	local c_lawn = minetest.get_content_id("default:dirt_with_grass")
@@ -235,9 +259,8 @@ local function generate(minp, maxp, seed)
 	vm:calc_lighting()
 	vm:update_liquids()
 	vm:write_to_map()
-	local t1 = os.clock()
 
-	local t = t1-t0
+	local t = os.clock()-t0
 	ngen = ngen + 1
 	sumtime = sumtime + t
 	sumtime2 = sumtime2 + t*t
