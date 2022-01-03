@@ -32,6 +32,9 @@ local function interp(v00, v01, v11, v10, xf, zf)
 	return v1*zf + v0*(1-zf)
 end
 
+-- Localize for performance
+local floor, min = math.floor, math.min
+
 local data = {}
 
 local noise_x_obj, noise_z_obj, noise_distort_obj, noise_heat_obj, noise_heat_blend_obj
@@ -111,8 +114,8 @@ local function generate(minp, maxp, seed)
 			end
 		end
 
-		local pminp = {x=math.floor(xmin), z=math.floor(zmin)}
-		local pmaxp = {x=math.floor(xmax)+1, z=math.floor(zmax)+1}
+		local pminp = {x=floor(xmin), z=floor(zmin)}
+		local pmaxp = {x=floor(xmax)+1, z=floor(zmax)+1}
 		incr = pmaxp.x-pminp.x+1
 		i_origin = 1 - pminp.z*incr - pminp.x
 		terrain_map, lake_map = heightmaps(pminp, pmaxp)
@@ -145,7 +148,7 @@ local function generate(minp, maxp, seed)
 
 	for z = minp.z, maxp.z do
 		for x = minp.x, maxp.x do
-			local ivm = a:index(x, minp.y, z)
+			local ivm = a:index(x, maxp.y+1, z)
 			local ground_above = false
 			local temperature
 			if use_biomes then
@@ -161,8 +164,8 @@ local function generate(minp, maxp, seed)
 				if use_distort then
 					local xn = noise_x_map[nid]
 					local zn = noise_z_map[nid]
-					local x0 = math.floor(xn)
-					local z0 = math.floor(zn)
+					local x0 = floor(xn)
+					local z0 = floor(zn)
 
 					local i0 = i_origin + z0*incr + x0
 					local i1 = i0+1
@@ -170,13 +173,12 @@ local function generate(minp, maxp, seed)
 					local i3 = i2-1
 
 					terrain = interp(terrain_map[i0], terrain_map[i1], terrain_map[i2], terrain_map[i3], xn-x0, zn-z0)
-					lake = math.min(lake_map[i0], lake_map[i1], lake_map[i2], lake_map[i3])
+					lake = min(lake_map[i0], lake_map[i1], lake_map[i2], lake_map[i3])
 				end
 
 				if y <= maxp.y then
 
 					local is_lake = lake > terrain
-					local ivm = a:index(x, y, z)
 					if y <= terrain then
 						if not use_biomes or y <= terrain-1 or ground_above then
 							data[ivm] = c_stone
@@ -205,7 +207,7 @@ local function generate(minp, maxp, seed)
 
 				ground_above = y <= terrain
 
-				ivm = ivm + ystride
+				ivm = ivm - ystride
 				if use_distort then
 					nid = nid + incrY
 				end

@@ -8,6 +8,10 @@ local riverbed_slope = mapgen_rivers.settings.riverbed_slope * mapgen_rivers.set
 
 local MAP_BOTTOM = -31000
 
+-- Localize for performance
+local floor, min, max = math.floor, math.min, math.max
+local unpk = unpack
+
 -- Linear interpolation
 local function interp(v00, v01, v11, v10, xf, zf)
 	local v0 = v01*xf + v00*(1-xf)
@@ -30,11 +34,11 @@ local function heightmaps(minp, maxp)
 
 			if poly then
 				local xf, zf = transform_quadri(poly.x, poly.z, x, z)
-				local i00, i01, i11, i10 = unpack(poly.i)
+				local i00, i01, i11, i10 = unpk(poly.i)
 
 				-- Load river width on 4 edges and corners
-				local r_west, r_north, r_east, r_south = unpack(poly.rivers)
-				local c_NW, c_NE, c_SE, c_SW = unpack(poly.river_corners)
+				local r_west, r_north, r_east, r_south = unpk(poly.rivers)
+				local c_NW, c_NE, c_SE, c_SW = unpk(poly.river_corners)
 
 				-- Calculate the depth factor for each edge and corner.
 				-- Depth factor:
@@ -64,10 +68,10 @@ local function heightmaps(minp, maxp)
 
 				-- Transform the coordinates to have xf and zf = 0 or 1 in rivers (to avoid rivers having lateral slope and to accomodate the surrounding smoothly)
 				if imax == 0 then
-					local x0 = math.max(r_west, c_NW-zf, zf-c_SW)
-					local x1 = math.min(r_east, c_NE+zf, c_SE-zf)
-					local z0 = math.max(r_north, c_NW-xf, xf-c_NE)
-					local z1 = math.min(r_south, c_SW+xf, c_SE-xf)
+					local x0 = max(r_west, c_NW-zf, zf-c_SW)
+					local x1 = min(r_east, c_NE+zf, c_SE-zf)
+					local z0 = max(r_north, c_NW-xf, xf-c_NE)
+					local z1 = min(r_south, c_SW+xf, c_SE-xf)
 					xf = (xf-x0) / (x1-x0)
 					zf = (zf-z0) / (z1-z0)
 				elseif imax == 1 then
@@ -90,7 +94,7 @@ local function heightmaps(minp, maxp)
 
 				-- Determine elevation by interpolation
 				local vdem = poly.dem
-				local terrain_height = math.floor(0.5+interp(
+				local terrain_height = floor(0.5+interp(
 					vdem[1],
 					vdem[2],
 					vdem[3],
@@ -115,10 +119,10 @@ local function heightmaps(minp, maxp)
 						lake_id = 1
 					end
 				end
-				local lake_height = math.max(math.floor(poly.lake[lake_id]), terrain_height)
+				local lake_height = max(floor(poly.lake[lake_id]), terrain_height)
 
 				if imax > 0 and depth_factor_max > 0 then
-					terrain_height = math.min(math.max(lake_height, sea_level) - math.floor(1+depth_factor_max*riverbed_slope), terrain_height)
+					terrain_height = min(max(lake_height, sea_level) - floor(1+depth_factor_max*riverbed_slope), terrain_height)
 				end
 
 				terrain_height_map[i] = terrain_height

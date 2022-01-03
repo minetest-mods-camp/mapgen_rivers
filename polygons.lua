@@ -90,16 +90,19 @@ if mapgen_rivers.settings.center then
 	map_offset.z = blocksize*Z/2
 end
 
+-- Localize for performance
+local floor, ceil, min, max, abs = math.floor, math.ceil, math.min, math.max, math.abs
+
 local min_catchment = mapgen_rivers.settings.min_catchment / (blocksize*blocksize)
 local wpower = mapgen_rivers.settings.river_widening_power
 local wfactor = 1/(2*blocksize * min_catchment^wpower)
 local function river_width(flow)
-	flow = math.abs(flow)
+	flow = abs(flow)
 	if flow < min_catchment then
 		return 0
 	end
 
-	return math.min(wfactor * flow ^ wpower, 1)
+	return min(wfactor * flow ^ wpower, 1)
 end
 
 local noise_heat -- Need a large-scale noise here so no heat blend
@@ -138,8 +141,8 @@ local function make_polygons(minp, maxp)
 
 	local polygons = {}
 	-- Determine the minimum and maximum coordinates of the polygons that could be on the chunk, knowing that they have an average size of 'blocksize' and a maximal offset of 0.5 blocksize.
-	local xpmin, xpmax = math.max(math.floor((minp.x+map_offset.x)/blocksize - 0.5), 0), math.min(math.ceil((maxp.x+map_offset.x)/blocksize + 0.5), X-2)
-	local zpmin, zpmax = math.max(math.floor((minp.z+map_offset.z)/blocksize - 0.5), 0), math.min(math.ceil((maxp.z+map_offset.z)/blocksize + 0.5), Z-2)
+	local xpmin, xpmax = max(floor((minp.x+map_offset.x)/blocksize - 0.5), 0), min(ceil((maxp.x+map_offset.x)/blocksize + 0.5), X-2)
+	local zpmin, zpmax = max(floor((minp.z+map_offset.z)/blocksize - 0.5), 0), min(ceil((maxp.z+map_offset.z)/blocksize + 0.5), Z-2)
 
 	-- Iterate over the polygons
 	for xp = xpmin, xpmax do
@@ -165,8 +168,8 @@ local function make_polygons(minp, maxp)
 
 			local bounds = {} -- Will be a list of the intercepts of polygon edges for every Z position (scanline algorithm)
 			-- Calculate the min and max Z positions 
-			local zmin = math.max(math.floor(math.min(unpack(poly_z)))+1, minp.z)
-			local zmax = math.min(math.floor(math.max(unpack(poly_z))), maxp.z)
+			local zmin = max(floor(min(unpack(poly_z)))+1, minp.z)
+			local zmax = min(floor(max(unpack(poly_z))), maxp.z)
 			-- And initialize the arrays
 			for z=zmin, zmax do
 				bounds[z] = {}
@@ -176,14 +179,14 @@ local function make_polygons(minp, maxp)
 			for i2=1, 4 do -- Loop on 4 edges
 				local z1, z2 = poly_z[i1], poly_z[i2]
 				-- Calculate the integer Z positions over which this edge spans
-				local lzmin = math.floor(math.min(z1, z2))+1
-				local lzmax = math.floor(math.max(z1, z2))
+				local lzmin = floor(min(z1, z2))+1
+				local lzmax = floor(max(z1, z2))
 				if lzmin <= lzmax then -- If there is at least one position in it
 					local x1, x2 = poly_x[i1], poly_x[i2]
 					-- Calculate coefficient of the equation defining the edge: X=aZ+b
 					local a = (x1-x2) / (z1-z2)
 					local b = (x1 - a*z1)
-					for z=math.max(lzmin, minp.z), math.min(lzmax, maxp.z) do
+					for z=max(lzmin, minp.z), min(lzmax, maxp.z) do
 						-- For every Z position involved, add the intercepted X position in the table
 						table.insert(bounds[z], a*z+b)
 					end
@@ -194,11 +197,11 @@ local function make_polygons(minp, maxp)
 				-- Now sort the bounds list
 				local zlist = bounds[z]
 				table.sort(zlist)
-				local c = math.floor(#zlist/2)
+				local c = floor(#zlist/2)
 				for l=1, c do
 					-- Take pairs of X coordinates: all positions between them belong to the polygon.
-					local xmin = math.max(math.floor(zlist[l*2-1])+1, minp.x)
-					local xmax = math.min(math.floor(zlist[l*2]), maxp.x)
+					local xmin = max(floor(zlist[l*2-1])+1, minp.x)
+					local xmax = min(floor(zlist[l*2]), maxp.x)
 					local i = (z-minp.z) * chulens + (xmin-minp.x) + 1
 					for x=xmin, xmax do
 						-- Fill the map at these places
@@ -220,16 +223,16 @@ local function make_polygons(minp, maxp)
 			local riverD = river_width(rivers[iD])
 			if glaciers then -- Widen the river
 				if get_temperature(poly_x[1], poly_dem[1], poly_z[1]) < 0 then
-					riverA = math.min(riverA*glacier_factor, 1)
+					riverA = min(riverA*glacier_factor, 1)
 				end
 				if get_temperature(poly_x[2], poly_dem[2], poly_z[2]) < 0 then
-					riverB = math.min(riverB*glacier_factor, 1)
+					riverB = min(riverB*glacier_factor, 1)
 				end
 				if get_temperature(poly_x[3], poly_dem[3], poly_z[3]) < 0 then
-					riverC = math.min(riverC*glacier_factor, 1)
+					riverC = min(riverC*glacier_factor, 1)
 				end
 				if get_temperature(poly_x[4], poly_dem[4], poly_z[4]) < 0 then
-					riverD = math.min(riverD*glacier_factor, 1)
+					riverD = min(riverD*glacier_factor, 1)
 				end
 			end
 
