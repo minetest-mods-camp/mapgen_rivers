@@ -1,12 +1,15 @@
 local worldpath = mapgen_rivers.world_data_path
 
+local floor = math.floor
+local sbyte, schar = string.byte, string.char
+local unpk = unpack
+
 function mapgen_rivers.load_map(filename, bytes, signed, size, converter)
 	local file = io.open(worldpath .. filename, 'rb')
 	local data = file:read('*all')
 	if #data < bytes*size then
 		data = minetest.decompress(data)
 	end
-	local sbyte = string.byte
 
 	local map = {}
 
@@ -34,8 +37,6 @@ function mapgen_rivers.load_map(filename, bytes, signed, size, converter)
 
 	return map
 end
-
-local sbyte = string.byte
 
 local loader_mt = {
 	__index = function(loader, i)
@@ -75,9 +76,6 @@ end
 function mapgen_rivers.write_map(filename, data, bytes)
 	local size = #data
 	local file = io.open(worldpath .. filename, 'wb')
-	local mfloor = math.floor
-	local schar = string.char
-	local upack = unpack
 
 	local bytelist = {}
 	for j=1, bytes do
@@ -85,15 +83,15 @@ function mapgen_rivers.write_map(filename, data, bytes)
 	end
 
 	for i=1, size do
-		local n = mfloor(data[i])
+		local n = floor(data[i])
 		data[i] = n
 		for j=bytes, 2, -1 do
 			bytelist[j] = n % 256
-			n = mfloor(n / 256)
+			n = floor(n / 256)
 		end
 		bytelist[1] = n % 256
 
-		file:write(schar(upack(bytelist)))
+		file:write(schar(unpk(bytelist)))
 	end
 
 	file:close()
