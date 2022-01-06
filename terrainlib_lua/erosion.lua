@@ -71,50 +71,50 @@ local function erode(model, time)
 end
 
 local function diffuse(model, time)
-    local mmax = math.max
-    local dem = model.dem
-    local X, Y = dem.X, dem.Y
-    local d = model.params.d
-    local dmax = d
-    if type(d) == "table" then
-        dmax = -math.huge
-        for i=1, X*Y do
-            dmax = mmax(dmax, d[i])
-        end
-    end
+	local mmax = math.max
+	local dem = model.dem
+	local X, Y = dem.X, dem.Y
+	local d = model.params.d
+	local dmax = d
+	if type(d) == "table" then
+		dmax = -math.huge
+		for i=1, X*Y do
+			dmax = mmax(dmax, d[i])
+		end
+	end
 
-    local diff = dmax * time
-    local niter = math.floor(diff) + 1
-    local ddiff = diff / niter
+	local diff = dmax * time
+	local niter = math.floor(diff) + 1
+	local ddiff = diff / niter
 
-    local temp = {}
-    for n=1, niter do
-        local i = 1
-        for y=1, Y do
-            local iN = (y==1) and 0 or -X
-            local iS = (y==Y) and 0 or X
-            for x=1, X do
-                local iW = (x==1) and 0 or -1
-                local iE = (x==X) and 0 or 1
-                temp[i] = (dem[i+iN]+dem[i+iE]+dem[i+iS]+dem[i+iW])*0.25 - dem[i]
-                i = i + 1
-            end
-        end
+	local temp = {}
+	for n=1, niter do
+		local i = 1
+		for y=1, Y do
+			local iN = (y==1) and 0 or -X
+			local iS = (y==Y) and 0 or X
+			for x=1, X do
+				local iW = (x==1) and 0 or -1
+				local iE = (x==X) and 0 or 1
+				temp[i] = (dem[i+iN]+dem[i+iE]+dem[i+iS]+dem[i+iW])*0.25 - dem[i]
+				i = i + 1
+			end
+		end
 
-        for i=1, X*Y do
-            dem[i] = dem[i] + temp[i]*ddiff
-        end
-    end
-    -- TODO Test this
+		for i=1, X*Y do
+			dem[i] = dem[i] + temp[i]*ddiff
+		end
+	end
+	-- TODO Test this
 end
 
 local modpath = ""
 if minetest then
-    if minetest.global_exists('mapgen_rivers') then
-        modpath = mapgen_rivers.modpath .. "terrainlib_lua/"
-    else
-        modpath = minetest.get_modpath(minetest.get_current_modname()) .. "terrainlib_lua/"
-    end
+	if minetest.global_exists('mapgen_rivers') then
+		modpath = mapgen_rivers.modpath .. "terrainlib_lua/"
+	else
+		modpath = minetest.get_modpath(minetest.get_current_modname()) .. "terrainlib_lua/"
+	end
 end
 
 local rivermapper = dofile(modpath .. "rivermapper.lua")
@@ -152,20 +152,20 @@ local function noise(model, time)
 end
 
 local function define_isostasy(model, ref, link)
-    ref = ref or model.dem
-    if link then
-        model.isostasy_ref = ref
-        return
-    end
+	ref = ref or model.dem
+	if link then
+		model.isostasy_ref = ref
+		return
+	end
 
-    local X, Y = ref.X, ref.Y
-    local ref2 = model.isostasy_ref or {X=X, Y=Y}
-    model.isostasy_ref = ref2
-    for i=1, X*Y do
-        ref2[i] = ref[i]
-    end
+	local X, Y = ref.X, ref.Y
+	local ref2 = model.isostasy_ref or {X=X, Y=Y}
+	model.isostasy_ref = ref2
+	for i=1, X*Y do
+		ref2[i] = ref[i]
+	end
 
-    return ref2
+	return ref2
 end
 
 local function isostasy(model)
