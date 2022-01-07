@@ -1,4 +1,4 @@
--- bounds.lua
+-- twist.lua
 
 local function get_bounds(dirs, rivers)
 	local X, Y = dirs.X, dirs.Y

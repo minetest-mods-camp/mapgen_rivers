@@ -71,20 +71,6 @@ local function box_blur_2d(map1, size, map2)
 	return map1
 end
 
---[[local function gaussian_blur(map, std, tail)
-	local exp = math.exp
-
-	local kernel_mid = math.ceil(std*tail) + 1
-	local kernel_size = kernel_mid * 2 - 1
-	local kernel = {}
-	local cst1 = 1/(std*(2*math.pi)^0.5)
-	local cst2 = -1/(2*std^2)
-	for i=1, kernel_size do
-		kernel[i] = cst1 * exp((i-kernel_mid)^2 * cst2)
-	end
-
-	]]
-
 local function gaussian_blur_approx(map, sigma, n, map2)
 	map2 = map2 or {}
 	local sizes = get_box_size(sigma, n)
