@@ -13,6 +13,7 @@ It used to be composed of a Python script doing pre-generation, and a Lua mod re
 License: GNU LGPLv3.0
 
 Code: Gaël de Sailly
+
 Flow routing algorithm concept (in `terrainlib/rivermapper.lua`): Cordonnier, G., Bovy, B., & Braun, J. (2019). A versatile, linear complexity algorithm for flow routing in topographies with depressions. Earth Surface Dynamics, 7(2), 549-562.
 
 # Requirements
