@@ -17,7 +17,7 @@ Code: Gaël de Sailly
 Flow routing algorithm concept (in `terrainlib/rivermapper.lua`): Cordonnier, G., Bovy, B., & Braun, J. (2019). A versatile, linear complexity algorithm for flow routing in topographies with depressions. Earth Surface Dynamics, 7(2), 549-562.
 
 # Requirements
-Mod dependencies: `default` required, and [`biomegen`](https://github.com/Gael-de-Sailly/biomegen) optional (provides biome system).
+No required dependency, but [`biomegen`](https://gitlab.com/gaelysam/biomegen) recommended (provides biome system).
 
 # Installation
 This mod should be placed in the `mods/` directory of Minetest like any other mod.

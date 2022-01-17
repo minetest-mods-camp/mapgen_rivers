@@ -16,7 +16,7 @@ local elevation_chill = mapgen_rivers.settings.elevation_chill
 local use_distort = mapgen_rivers.settings.distort
 local use_biomes = mapgen_rivers.settings.biomes
 local use_biomegen_mod = use_biomes and minetest.global_exists('biomegen')
-use_biomes = use_biomes and not use_biomegen_mod
+use_biomes = use_biomes and minetest.global_exists('default') and not use_biomegen_mod
 
 if use_biomegen_mod then
 	biomegen.set_elevation_chill(elevation_chill)
@@ -147,15 +147,19 @@ local function generate(minp, maxp, seed)
 		end
 	end
 
-	local c_stone = minetest.get_content_id("default:stone")
-	local c_dirt = minetest.get_content_id("default:dirt")
-	local c_lawn = minetest.get_content_id("default:dirt_with_grass")
-	local c_dirtsnow = minetest.get_content_id("default:dirt_with_snow")
-	local c_snow = minetest.get_content_id("default:snowblock")
-	local c_sand = minetest.get_content_id("default:sand")
-	local c_water = minetest.get_content_id("default:water_source")
-	local c_rwater = minetest.get_content_id("default:river_water_source")
-	local c_ice = minetest.get_content_id("default:ice")
+	local c_stone = minetest.get_content_id("mapgen_stone")
+	local c_water = minetest.get_content_id("mapgen_water_source")
+	local c_rwater = minetest.get_content_id("mapgen_river_water_source")
+
+	local c_dirt, c_lawn, c_dirtsnow, c_snow, c_sand, c_ice
+	if use_biomes then
+		c_dirt = minetest.get_content_id("default:dirt")
+		c_lawn = minetest.get_content_id("default:dirt_with_grass")
+		c_dirtsnow = minetest.get_content_id("default:dirt_with_snow")
+		c_snow = minetest.get_content_id("default:snowblock")
+		c_sand = minetest.get_content_id("default:sand")
+		c_ice = minetest.get_content_id("default:ice")
+	end
 
 	local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
 	vm:get_data(data)
